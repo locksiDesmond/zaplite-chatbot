@@ -2,7 +2,8 @@
 
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import { VariantProps, cva } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
+import type { VariantProps } from 'class-variance-authority';
 import { PanelLeft } from 'lucide-react';
 
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -111,6 +112,31 @@ const SidebarProvider = React.forwardRef<
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
     }, [toggleSidebar]);
+
+    // Auto-open sidebar on mouse hover (desktop only, if enabled in settings)
+    React.useEffect(() => {
+      if (isMobile) return;
+      let timeout: number | null = null;
+      const handleMouseMove = (e: MouseEvent) => {
+        const autoOpen = localStorage.getItem('sidebar:autoOpen') === 'true';
+        if (!autoOpen) return;
+        if (e.clientX < 32 && !open) {
+          // Near left edge, open sidebar
+          timeout = window.setTimeout(() => setOpen(true), 100);
+        } else if (e.clientX > 240 && open) {
+          // Far from left edge, close sidebar
+          timeout = window.setTimeout(() => setOpen(false), 200);
+        } else if (timeout) {
+          window.clearTimeout(timeout);
+          timeout = null;
+        }
+      };
+      window.addEventListener('mousemove', handleMouseMove);
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        if (timeout) window.clearTimeout(timeout);
+      };
+    }, [isMobile, open, setOpen]);
 
     // We add a state so that we can do data-state="expanded" or "collapsed".
     // This makes it easier to style the sidebar with Tailwind classes.

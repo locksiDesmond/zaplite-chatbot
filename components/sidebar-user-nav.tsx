@@ -5,6 +5,7 @@ import Image from 'next/image';
 import type { User } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
 import {
   DropdownMenu,
@@ -29,6 +30,20 @@ export function SidebarUserNav({ user }: { user: User }) {
   const { setTheme, resolvedTheme } = useTheme();
 
   const isGuest = guestRegex.test(data?.user?.email ?? '');
+
+  const [autoOpenSidebar, setAutoOpenSidebar] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('sidebar:autoOpen');
+    setAutoOpenSidebar(stored === 'true');
+  }, []);
+
+  const handleToggleAutoOpen = () => {
+    setAutoOpenSidebar((prev) => {
+      localStorage.setItem('sidebar:autoOpen', String(!prev));
+      return !prev;
+    });
+  };
 
   return (
     <SidebarMenu>
@@ -74,9 +89,23 @@ export function SidebarUserNav({ user }: { user: User }) {
             <DropdownMenuItem
               data-testid="user-nav-item-theme"
               className="cursor-pointer"
-              onSelect={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+              onSelect={() =>
+                setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+              }
             >
               {`Toggle ${resolvedTheme === 'light' ? 'dark' : 'light'} mode`}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              asChild
+              data-testid="user-nav-item-sidebar-auto-open"
+              className="cursor-pointer"
+              onSelect={handleToggleAutoOpen}
+            >
+              <button type="button" className="w-full flex items-center gap-2">
+                <span>Sidebar auto-open on hover</span>
+                <input type="checkbox" checked={autoOpenSidebar} readOnly />
+              </button>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild data-testid="user-nav-item-auth">
