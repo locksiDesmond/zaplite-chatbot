@@ -24,7 +24,19 @@ export async function createAuthenticatedContext({
 }: {
   browser: Browser;
   name: string;
-  chatModel?: 'chat-model' | 'chat-model-reasoning';
+  chatModel?:
+    | 'gpt-4o'
+    | 'gpt-4o-mini'
+    | 'gpt-4-turbo'
+    | 'gpt-3.5-turbo'
+    | 'gemini-2.0-flash-exp'
+    | 'gemini-1.5-pro'
+    | 'gemini-1.5-flash'
+    | 'grok-2-vision-1212'
+    | 'grok-2-1212'
+    | 'grok-3-mini-beta'
+    | 'chat-model'
+    | 'grok-2-vision-1212';
 }): Promise<UserContext> {
   const directory = path.join(__dirname, '../playwright/.sessions');
 
@@ -53,7 +65,7 @@ export async function createAuthenticatedContext({
 
   const chatPage = new ChatPage(page);
   await chatPage.createNewChat();
-  await chatPage.chooseModelFromSelector('chat-model-reasoning');
+  await chatPage.chooseModelFromSelector('grok-2-vision-1212');
   await expect(chatPage.getSelectedModel()).resolves.toEqual('Reasoning model');
 
   await page.waitForTimeout(1000);

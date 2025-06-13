@@ -38,7 +38,7 @@ export const test = baseTest.extend<{}, Fixtures>({
       const curie = await createAuthenticatedContext({
         browser,
         name: `curie-${workerInfo.workerIndex}-${getUnixTime(new Date())}`,
-        chatModel: 'chat-model-reasoning',
+        chatModel: 'grok-2-vision-1212',
       });
 
       await use(curie);
