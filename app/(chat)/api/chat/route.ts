@@ -95,16 +95,21 @@ export async function POST(request: Request) {
     const chat = await getChatById({ id });
 
     if (!chat) {
-      const title = await generateTitleFromUserMessage({
-        message,
-      });
+      try {
+        const title = await generateTitleFromUserMessage({
+          message,
+        });
 
-      await saveChat({
-        id,
-        userId: session.user.id,
-        title,
-        visibility: selectedVisibilityType,
-      });
+        await saveChat({
+          id,
+          userId: session.user.id,
+          title,
+          visibility: selectedVisibilityType,
+        });
+      } catch (error: any) {
+        console.log({ error });
+        throw new Error(error);
+      }
     } else {
       if (chat.userId !== session.user.id) {
         return new ChatSDKError('forbidden:chat').toResponse();
@@ -226,6 +231,8 @@ export async function POST(request: Request) {
 
     const streamContext = getStreamContext();
 
+    console.log({ streamContext });
+
     if (streamContext) {
       return new Response(
         await streamContext.resumableStream(streamId, () => stream),
@@ -234,9 +241,11 @@ export async function POST(request: Request) {
       return new Response(stream);
     }
   } catch (error) {
+    console.log({ error });
     if (error instanceof ChatSDKError) {
       return error.toResponse();
     }
+    return new ChatSDKError('bad_request:chat').toResponse();
   }
 }
 

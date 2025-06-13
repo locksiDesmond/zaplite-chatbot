@@ -43,7 +43,7 @@ export const chatModels: Array<ChatModel> = [
     context: '16K tokens',
     capabilities: ['text', 'code'],
   },
-  
+
   // Google Models
   {
     id: 'gemini-2.0-flash-exp',
@@ -69,7 +69,7 @@ export const chatModels: Array<ChatModel> = [
     context: '1M tokens',
     capabilities: ['text', 'vision', 'code'],
   },
-  
+
   // xAI Models
   {
     id: 'grok-2-vision-1212',

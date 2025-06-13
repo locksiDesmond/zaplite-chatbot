@@ -12,7 +12,18 @@ export const entitlementsByUserType: Record<UserType, Entitlements> = {
    */
   guest: {
     maxMessagesPerDay: 20,
-    availableChatModelIds: ['chat-model', 'grok-2-vision-1212', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash', 'grok-2-vision-1212', 'grok-2-1212', 'grok-3-mini-beta'],
+    availableChatModelIds: [
+      'chat-model',
+      'grok-2-vision-1212',
+      'gemini-2.0-flash-exp',
+      'gemini-1.5-pro',
+      'gemini-1.5-flash',
+      'grok-2-vision-1212',
+      'grok-2-1212',
+      'grok-3-mini-beta',
+      'gpt-4o',
+      'gpt-4o-mini',
+    ],
   },
 
   /*
