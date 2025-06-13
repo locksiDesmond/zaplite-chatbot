@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from './toast';
 import { LoaderIcon } from './icons';
 import { guestRegex } from '@/lib/constants';
+import { Toggle } from './ui/toggle';
 
 export function SidebarUserNav({ user }: { user: User }) {
   const router = useRouter();
@@ -39,6 +40,7 @@ export function SidebarUserNav({ user }: { user: User }) {
   }, []);
 
   const handleToggleAutoOpen = () => {
+	console.log('clicked ')
     setAutoOpenSidebar((prev) => {
       localStorage.setItem('sidebar:autoOpen', String(!prev));
       return !prev;
@@ -102,10 +104,11 @@ export function SidebarUserNav({ user }: { user: User }) {
               className="cursor-pointer"
               onSelect={handleToggleAutoOpen}
             >
-              <button type="button" className="w-full flex items-center gap-2">
-                <span>Sidebar auto-open on hover</span>
-                <input type="checkbox" checked={autoOpenSidebar} readOnly />
-              </button>
+                <Toggle variant="outline" size="sm" pressed={autoOpenSidebar}>
+                  <span className="text-sm whitespace-nowrap">
+                    Sidebar auto-open on hover
+                  </span>
+             </Toggle>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild data-testid="user-nav-item-auth">

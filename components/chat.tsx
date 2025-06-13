@@ -143,6 +143,8 @@ export function Chat({
             <MultimodalInput
               chatId={id}
               input={input}
+              selectedModelId={initialChatModel}
+              session={session}
               setInput={setInput}
               handleSubmit={handleSubmit}
               status={status}

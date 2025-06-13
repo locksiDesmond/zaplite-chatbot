@@ -85,10 +85,6 @@ export const ModelSelector = ({
     [optimisticModelId, availableChatModels],
   );
 
-  const ProviderIcon = selectedChatModel
-    ? providerIcons[selectedChatModel.provider]
-    : null;
-
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger
@@ -101,17 +97,18 @@ export const ModelSelector = ({
         <Button
           data-testid="model-selector"
           variant="outline"
-          className="md:px-3 md:h-[34px] gap-2"
+          className="md:px-3 md:h-[34px] gap-2 bg-[#2C2531] transition-transform hover:bg-accent/50"
         >
-          {ProviderIcon && <ProviderIcon size={16} />}
           <span className="max-w-32 truncate">{selectedChatModel?.name}</span>
-          <ChevronDownIcon />
+          <div className={`${open ? 'rotate-180' : ''} transition-transform`}>
+            <ChevronDownIcon />
+          </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-[400px] p-3">
         <div className="relative mb-3">
           <SearchIcon
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             size={16}
           />
           <Input
@@ -122,15 +119,11 @@ export const ModelSelector = ({
           />
         </div>
 
-        <div className="max-h-[400px] overflow-y-auto">
+        <div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
           {Object.entries(groupedModels).map(([provider, models]) => {
-            const ProviderIcon =
-              providerIcons[provider as keyof typeof providerIcons];
-
             return (
               <div key={provider} className="mb-4 last:mb-0">
                 <div className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                  <ProviderIcon size={14} />
                   {provider}
                 </div>
 

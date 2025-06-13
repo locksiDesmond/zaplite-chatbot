@@ -23,9 +23,11 @@ import { Textarea } from './ui/textarea';
 import equal from 'fast-deep-equal';
 import type { UseChatHelpers } from '@ai-sdk/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, Globe2Icon, GlobeIcon, SearchIcon } from 'lucide-react';
 import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom';
 import type { VisibilityType } from './visibility-selector';
+import { ModelSelector } from './model-selector';
+import type { Session } from 'next-auth';
 
 function PureMultimodalInput({
   chatId,
@@ -35,12 +37,15 @@ function PureMultimodalInput({
   stop,
   attachments,
   setAttachments,
+  session,
   messages,
+
   setMessages,
   append,
   handleSubmit,
   className,
   selectedVisibilityType,
+  selectedModelId,
 }: {
   chatId: string;
   input: UseChatHelpers['input'];
@@ -51,9 +56,11 @@ function PureMultimodalInput({
   setAttachments: Dispatch<SetStateAction<Array<Attachment>>>;
   messages: Array<UIMessage>;
   setMessages: UseChatHelpers['setMessages'];
+  selectedModelId: string;
   append: UseChatHelpers['append'];
   handleSubmit: UseChatHelpers['handleSubmit'];
   className?: string;
+  session: Session;
   selectedVisibilityType: VisibilityType;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -284,10 +291,16 @@ function PureMultimodalInput({
         />
       </div>
 
-      <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start">
-        <AttachmentsButton fileInputRef={fileInputRef} status={status} />
-      </div>
+      <div className="bottom-0 pl-3 absolute p-2 w-fit flex flex-row items-center bg-transparent">
+        <ModelSelector session={session} selectedModelId={selectedModelId} />
 
+        <div className="p-2 w-fit flex flex-row justify-start ml-auto">
+          <SearchButton />
+        </div>
+        <div className="p-2 w-fit flex flex-row justify-start">
+          <AttachmentsButton fileInputRef={fileInputRef} status={status} />
+        </div>
+      </div>
       <div className="absolute bottom-0 right-0 p-2 w-fit flex flex-row justify-end">
         {status === 'submitted' ? (
           <StopButton stop={stop} setMessages={setMessages} />
@@ -340,6 +353,20 @@ function PureAttachmentsButton({
 }
 
 const AttachmentsButton = memo(PureAttachmentsButton);
+
+const SearchButton = memo(PureSearchButton);
+
+function PureSearchButton() {
+  return (
+    <Button
+      data-testid="search-button"
+      className="rounded-full p-1.5 text-xs border-[#322336] px-3 h-fit border bg-transparent text-foreground dark:border-zinc-600 hover:bg-accent/50"
+    >
+      <GlobeIcon size={14} />
+      <span className="ml-0">Search</span>
+    </Button>
+  );
+}
 
 function PureStopButton({
   stop,
